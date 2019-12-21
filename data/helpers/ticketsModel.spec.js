@@ -21,8 +21,13 @@ describe('Tickets Model', () => {
     })
     
     it('is able to filter by unresolved tickets', async () => {
+      const id = 2;
+      const changes = { resolved: true };
+
       await seedTickets.seed(db);
-      const tickets = await Tickets.findBy({ resolved: 0 });
+      await Tickets.change(id , changes);
+
+      const tickets = await Tickets.findBy({ resolved: false });
       expect(tickets).toHaveLength(1);
     })
       
@@ -33,7 +38,7 @@ describe('Tickets Model', () => {
       await seedTickets.seed(db);
       const id = 2;
       const changes = { resolved: true };
-      const ticket = await Tickets.change({ id }, changes);
+      const ticket = await Tickets.change(id , changes);
 
       expect(!!ticket.resolved).toBe(true);
     })

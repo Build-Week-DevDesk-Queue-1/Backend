@@ -9,6 +9,12 @@ const findBy = property => {
     .where(property);
 }
 
+const change = async (id, changes) => {
+  await findBy({ id }).update(changes);
+
+  return findBy({ id }).first();
+}
+
 const add = async ticket => {
   const [id] = await db('tickets').insert(ticket, 'id');
   
@@ -18,5 +24,6 @@ const add = async ticket => {
 module.exports = {
   find,
   findBy,
+  change,
   add
 }
