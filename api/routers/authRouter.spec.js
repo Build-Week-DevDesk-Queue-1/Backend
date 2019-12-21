@@ -14,6 +14,11 @@ const registerTemplate = {
     role_id: 2
 }
 
+const loginTemplate = {
+  email: 'test@testmail.com',
+  password: 'testing123!'
+}
+
 describe('Authentication Router', () => {
   beforeEach(async () => {
     await cleanup.seed(db);
@@ -234,12 +239,24 @@ describe('Authentication Router', () => {
       expect(response.status).toBe(400);
     })
 
-    it('returns a status code 201 and a user object with a token', async () => {
+    it('returns a status of 404 when the credentials don\'t exist in the db', async () => {
       const response = await request(server)
         .post('/api/auth/login')
         .send(loginTemplate);
 
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(404);
+    })
+
+    it('returns a status code 200 and a user object with a token', async () => {
+      await request(server)
+        .post('/api/auth/register')
+        .send(registerTemplate);
+
+      const response = await request(server)
+        .post('/api/auth/login')
+        .send(loginTemplate);
+      
+      expect(response.status).toBe(200);
       expect('user' in response.body).toBe(true);
       expect('token' in response.body).toBe(true);
     })
