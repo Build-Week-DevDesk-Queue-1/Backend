@@ -56,6 +56,7 @@ async function validateRegister(req, res, next) {
   }
 
   const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
 
   if (!email || !emailPattern.test(email)) {
     return res.status(400).json({ message: 'must include a valid email' });
@@ -65,7 +66,7 @@ async function validateRegister(req, res, next) {
     return res.status(400).json({ message: 'must include password' });
   }
 
-  if (password.length < 6) {
+  if (!passwordPattern.test(password)) {
     return res.status(400).json({ message: 'password must include a number, special character, and be a minimum of 6 characters' });
   }
 
