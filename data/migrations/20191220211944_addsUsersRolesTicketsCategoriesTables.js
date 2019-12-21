@@ -22,6 +22,12 @@ exports.up = function(knex) {
     
     tbl.string('password', 128)
       .notNullable();
+    
+    tbl.string('first_name', 128)
+      .notNullable();
+    
+    tbl.string('last_name', 128)
+      .notNullable();
   })
   .createTable('categories', tbl => {
     tbl.increments();
