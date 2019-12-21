@@ -4,6 +4,7 @@ const cleanup = require('../seeds/01-cleanup');
 const seedRoles = require('../seeds/02-roles');
 const seedUsers = require('../seeds/03-users');
 const seedCategories = require('../seeds/04-categories');
+const seedTickets = require('../seeds/05-tickets');
 
 describe('Tickets Model', () => {
   beforeEach(async () => {
@@ -14,9 +15,32 @@ describe('Tickets Model', () => {
   })
 
   describe('when finding all tickets', () => {
-    it('returns an empty array with no seeds', async () => {
+    it('returns an array', async () => {
       const tickets = await Tickets.find();
       expect(Array.isArray(tickets)).toBe(true);
+    })
+    
+    it('is able to filter by unresolved tickets', async () => {
+      const id = 2;
+      const changes = { resolved: true };
+
+      await seedTickets.seed(db);
+      await Tickets.change(id , changes);
+
+      const tickets = await Tickets.findBy({ resolved: false });
+      expect(tickets).toHaveLength(1);
+    })
+      
+  })
+
+  describe('when updating an existing ticket', () => {
+    it('returns the ticket back with the updated field', async () => {
+      await seedTickets.seed(db);
+      const id = 2;
+      const changes = { resolved: true };
+      const ticket = await Tickets.change(id , changes);
+
+      expect(!!ticket.resolved).toBe(true);
     })
   })
 
