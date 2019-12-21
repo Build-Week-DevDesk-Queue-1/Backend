@@ -1,4 +1,6 @@
+const db = require('../dbConfig');
 const Categories = require('./categoriesModel');
+const cleanup = require('../seeds/01-cleanup')
 const seedCategories = require('../seeds/04-categories');
 
 describe('Categories Model', () => {
