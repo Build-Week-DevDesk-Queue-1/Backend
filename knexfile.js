@@ -4,6 +4,7 @@ module.exports = {
 
   test: {
     client: 'sqlite3',
+    useNullAsDefault: true,
     connection: {
       filename: './data/devdeskq-test.db3'
     },
@@ -19,6 +20,7 @@ module.exports = {
 
   development: {
     client: 'sqlite3',
+    useNullAsDefault: true,
     connection: {
       filename: './data/devdeskq-dev.db3'
     },
