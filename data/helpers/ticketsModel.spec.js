@@ -16,7 +16,7 @@ describe('Tickets Model', () => {
 
   describe('when finding all tickets', () => {
     it('returns an empty array with no seeds', async () => {
-      const tickets = await Users.find();
+      const tickets = await Tickets.find();
       expect(Array.isArray(tickets)).toBe(true);
       expect(tickets).toHaveLength(0);
     })
