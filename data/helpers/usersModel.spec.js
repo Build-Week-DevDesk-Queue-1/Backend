@@ -14,6 +14,7 @@ describe('Users Model', () => {
       const users = await Users.find();
       expect(Array.isArray(users)).toBe(true);
     })
+  })
 
   describe('when adding new users', () => {
     it('returns a user object with an id attached', async () => {

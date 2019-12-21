@@ -41,6 +41,8 @@ exports.up = function(knex) {
   .createTable('tickets', tbl => {
     tbl.increments('id');
 
+    tbl.timestamps(false,true);
+
     tbl.integer('student_id')
       .unsigned()
       .references('id')

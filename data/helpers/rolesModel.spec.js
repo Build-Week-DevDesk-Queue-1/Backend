@@ -16,4 +16,13 @@ describe('Roles Model', () => {
       expect(Array.isArray(roles)).toBe(true);
     })
   })
+
+  describe('when finding specific role', () => {
+    it('returns an object with a name and id property', async () => {
+      const role = await Roles.findBy({ id: 1 });
+
+      expect('id' in role).toBe(true);
+      expect('name' in role).toBe(true);
+    })
+  })
 })
