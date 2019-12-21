@@ -13,7 +13,7 @@ const findBy = properties => {
   }
 
   return db('users')
-    .select('users.id', 'role_id', 'email', 'password', 'first_name', 'last_name', 'roles.id as role')
+    .select('users.id', 'role_id', 'email', 'password', 'first_name', 'last_name', 'roles.name as role')
     .where(properties)
     .join('roles', 'role_id', 'roles.id')
 }
