@@ -67,8 +67,6 @@ describe('Tickets Router', () => {
         .set(headers)
 
       const tickets = response.body;
-      console.log(id);
-      console.log(tickets);
       expect(tickets.every(ticket => ticket.student_id === id)).toBe(true);
     })
   })
