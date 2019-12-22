@@ -1,15 +1,16 @@
-const db = require('../dbConfig');
+const db = require('../../dbConfig');
 const Roles = require('./rolesModel');
-const cleanup = require('../seeds/01-cleanup');
-const seedRoles = require('../seeds/02-roles');
+const cleanup = require('../../seeds/01-cleanup');
+const seedRoles = require('../../seeds/02-roles');
 
 describe('Roles Model', () => {
-  beforeEach(async () => {
-    await cleanup.seed(db);
-    await seedRoles.seed(db);
-  })
 
   describe('when finding all roles', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('returns an array', async () => {
       const roles = await Roles.find();
 
@@ -18,6 +19,11 @@ describe('Roles Model', () => {
   })
 
   describe('when finding specific role', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('returns an object with a name and id property', async () => {
       const role = await Roles.findBy({ id: 1 });
 

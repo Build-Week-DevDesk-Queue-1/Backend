@@ -20,12 +20,12 @@ const loginTemplate = {
 }
 
 describe('Authentication Router', () => {
-  beforeEach(async () => {
-    await cleanup.seed(db);
-    await seedRoles.seed(db);
-  })
-
   describe('POST /register', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('does not allow an empty request body', async () => {
       const registerObject = {};
       const response = await request(server)
@@ -170,6 +170,11 @@ describe('Authentication Router', () => {
   })
 
   describe('POST /login', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('does not allow an empty request body', async () => {
       const loginObject = {};
       const response = await request(server)

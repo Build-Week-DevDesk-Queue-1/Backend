@@ -9,24 +9,27 @@ const seedTickets = require('../../data/seeds/05-tickets');
 const server = require('../server');
 
 describe('Tickets Router', () => {
-  beforeEach(async () => {
-    await cleanup.seed(db);
-    await seedRoles.seed(db);
-    await seedUsers.seed(db);
-    await seedCategories.seed(db);
-  })
   describe('GET on /', () => {
-    it('returns an array when token is from helper role', async () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+      await seedUsers.seed(db);
+      await seedCategories.seed(db);
+    })
+
+    it('returns an array when token is valid', async () => {
       const credentials = { email: 'nattajohn@devdeskq.com', password: 'testing123!' }
-      const { body: { token } } = await request(server)
+      const loginResponse = await request(server)
         .post('/api/auth/login')
         .send(credentials)
-      
+
+      const { body: { token } } = loginResponse;
       const headers = { 'Authorization': token };
       
       const response = await request(server)
         .get('/api/tickets')
         .set(headers)
+
       expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
     })
