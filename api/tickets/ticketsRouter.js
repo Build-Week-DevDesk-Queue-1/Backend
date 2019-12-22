@@ -7,9 +7,9 @@ router.get('/', async (req, res) => {
   const { role_id, id } = req.decoded_token;
   const role = await Roles.findBy({ id: role_id });
 
-  const queryObject = role === 'Student'
+  const queryObject = role.name === 'Student'
     ? { student_id: id }
-    : role === 'Helper'
+    : role.name === 'Helper'
       ? { helper_id: null, resolved: false }
       : null
 
@@ -23,7 +23,17 @@ router.get('/', async (req, res) => {
       res.status(200).json(tickets);
     })
     .catch(error => res.status(500).json({ error }));
+})
 
+router.put('/:id/accept', checkRole('Helper'), (req, res) => {
+  const ticket_id = req.params.id;
+  const { id } = req.decoded_token;
+  Tickets
+    .change(parseInt(ticket_id), { helper_id: id })
+    .then(ticket => {
+      res.status(200).json(ticket);
+    })
+    .catch(error => res.status(500).json({ error }));
 })
 
 router.post('/', checkRole('Student'), (req, res) => {
