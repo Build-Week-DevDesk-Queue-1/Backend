@@ -33,5 +33,43 @@ describe('Tickets Router', () => {
       expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
     })
+
+    it('returned array should not contain any assigned helper already if helper', async () => {
+      const credentials = { email: 'nattajohn@devdeskq.com', password: 'testing123!' }
+      const loginResponse = await request(server)
+        .post('/api/auth/login')
+        .send(credentials)
+
+      const { body: { token } } = loginResponse;
+      const headers = { 'Authorization': token };
+      
+      const response = await request(server)
+        .get('/api/tickets')
+        .set(headers)
+
+      const tickets = response.body.filter(ticket => !!ticket.helper_id !== true);
+      expect(!!tickets.length).toBe(false);
+    })
+
+    it('returned array should only contain tickets created by the student that made it', async () => {
+      await seedTickets.seed(db);
+
+      const credentials = { email: 'michael@devdeskq.com', password: 'testing123!' }
+      const loginResponse = await request(server)
+        .post('/api/auth/login')
+        .send(credentials)
+
+      const { body: { token, user: { id } } } = loginResponse;
+      const headers = { 'Authorization': token };
+      
+      const response = await request(server)
+        .get('/api/tickets')
+        .set(headers)
+
+      const tickets = response.body;
+      console.log(id);
+      console.log(tickets);
+      expect(tickets.every(ticket => ticket.student_id === id)).toBe(true);
+    })
   })
 })
