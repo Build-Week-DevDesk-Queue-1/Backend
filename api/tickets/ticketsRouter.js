@@ -14,7 +14,6 @@ router.get('/', async (req, res) => {
           res.status(200).json(tickets);
         })
         .catch(error => res.status(500).json({ error }));
-      break;
 
     case 'Helper':
       return Tickets
@@ -23,7 +22,6 @@ router.get('/', async (req, res) => {
           res.status(200).json(tickets);
         })
         .catch(error => res.status(500).json({ error }));
-      break; 
     
     default:
       res.status(500).json({ error: 'unable to fetch tickets at this time' });
