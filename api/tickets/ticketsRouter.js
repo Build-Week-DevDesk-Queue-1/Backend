@@ -32,13 +32,7 @@ router.get('/:id', validateTicketId, (req, res) => {
   Tickets
     .findBy({ id })
     .first()
-    .then(ticket => {
-      if (ticket) {
-        res.status(200).json(ticket);
-      } else {
-        res.status(404).json({ message: `the ticket with id# ${id} does not exist` });
-      }
-    })
+    .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error }));
 });
 
