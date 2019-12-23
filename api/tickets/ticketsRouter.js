@@ -1,6 +1,6 @@
 const express = require('express')
 const { Tickets, Roles } = require('../../data/helpers');
-const { checkRole } = require('../middleware')
+const { checkRole, validateTicketId } = require('../middleware')
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateTicketId, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -56,7 +56,7 @@ router.get('/open', (req, res) => {
     .then(error => res.status(500).json({ error }));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateTicketId, (req, res) => {
   const id = parseInt(req.params.id);
   const changes = req.body;
 
@@ -66,7 +66,7 @@ router.put('/:id', (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/accept', checkRole('Helper'), (req, res) => {
+router.put('/:id/accept', validateTicketId, checkRole('Helper'), (req, res) => {
   const ticket_id = req.params.id;
   const { id } = req.decoded_token;
 
@@ -78,7 +78,7 @@ router.put('/:id/accept', checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/reopen', checkRole('Helper'), (req, res) => {
+router.put('/:id/reopen', validateTicketId, checkRole('Helper'), (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -87,7 +87,7 @@ router.put('/:id/reopen', checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/resolve', checkRole('Helper'), (req, res) => {
+router.put('/:id/resolve', validateTicketId, checkRole('Helper'), (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -109,7 +109,7 @@ router.post('/', checkRole('Student'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateTicketId, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
