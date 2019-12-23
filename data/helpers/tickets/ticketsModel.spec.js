@@ -1,20 +1,25 @@
-const db = require('../dbConfig');
+const db = require('../../dbConfig');
 const Tickets = require('./ticketsModel');
-const cleanup = require('../seeds/01-cleanup');
-const seedRoles = require('../seeds/02-roles');
-const seedUsers = require('../seeds/03-users');
-const seedCategories = require('../seeds/04-categories');
-const seedTickets = require('../seeds/05-tickets');
+const cleanup = require('../../seeds/01-cleanup');
+const seedRoles = require('../../seeds/02-roles');
+const seedUsers = require('../../seeds/03-users');
+const seedCategories = require('../../seeds/04-categories');
+const seedTickets = require('../../seeds/05-tickets');
 
 describe('Tickets Model', () => {
-  beforeEach(async () => {
-    await cleanup.seed(db);
-    await seedRoles.seed(db);
-    await seedUsers.seed(db);
-    await seedCategories.seed(db);
-  })
 
   describe('when finding all tickets', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+      await seedUsers.seed(db);
+      await seedCategories.seed(db);
+    })
+    
+    afterEach(async () => {
+      await cleanup.seed(db);
+    })
+
     it('returns an array', async () => {
       const tickets = await Tickets.find();
       expect(Array.isArray(tickets)).toBe(true);
@@ -34,6 +39,13 @@ describe('Tickets Model', () => {
   })
 
   describe('when updating an existing ticket', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+      await seedUsers.seed(db);
+      await seedCategories.seed(db);
+    })
+
     it('returns the ticket back with the updated field', async () => {
       await seedTickets.seed(db);
       const id = 2;
@@ -45,6 +57,13 @@ describe('Tickets Model', () => {
   })
 
   describe('when adding a new ticket', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+      await seedUsers.seed(db);
+      await seedCategories.seed(db);
+    })
+
     it('returns a ticket object with an id attached', async () => {
       const ticketObject = {
         title: 'Test Ticket',
