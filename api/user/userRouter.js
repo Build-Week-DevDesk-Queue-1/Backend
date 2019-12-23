@@ -1,3 +1,4 @@
+const router = require('express').Router();
 /*
   GET /api/user/tickets 
 
@@ -6,3 +7,13 @@
   Helper: all of the token owner's accepted tickets
   
 */
+
+router.get('/', (req, res) => {
+
+});
+
+<<<<<<< Updated upstream
+module.exports = router;
+=======
+module.exports = router;
+>>>>>>> Stashed changes
