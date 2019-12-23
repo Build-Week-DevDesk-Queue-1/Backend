@@ -15,6 +15,10 @@ const change = async (id, changes) => {
   return findBy({ id }).first();
 }
 
+const remove = id => {
+  return findBy({ id }).delete();
+}
+
 const add = async ticket => {
   const [id] = await db('tickets').insert(ticket, 'id');
   
@@ -25,5 +29,6 @@ module.exports = {
   find,
   findBy,
   change,
+  remove,
   add
 }

@@ -27,7 +27,6 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-// TODO get content of the ticket by it's id
   const id = parseInt(req.params.id);
 
   Tickets
@@ -44,26 +43,33 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/unresolved', (req, res) => {
-// TODO get an array of all unresolved tickets (even the ones that already have an assigned helper)
   Tickets
     .findBy({ resolved: false })
-    .then(tickets => {
-      res.status(200).json(tickets);
-    })
+    .then(tickets => res.status(200).json(tickets))
     .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/open', (req, res) => {
-// TODO get an array of all open tickets (no helper_id assigned)
+  Tickets
+    .findBy({ resolved: false, helper_id: null })
+    .then(tickets => res.status(200).json(tickets))
+    .then(error => res.status(500).json({ error }));
 });
 
 router.put('/:id', (req, res) => {
-// TODO able to change title, content, and tried
+  const id = parseInt(req.params.id);
+  const changes = req.body;
+
+  Tickets
+    .change(id, changes)
+    .then(ticket => res.status(200).json(ticket))
+    .catch(error => res.status(500).json({ error }));
 });
 
 router.put('/:id/accept', checkRole('Helper'), (req, res) => {
   const ticket_id = req.params.id;
   const { id } = req.decoded_token;
+
   Tickets
     .change(parseInt(ticket_id), { helper_id: id })
     .then(ticket => {
@@ -73,12 +79,22 @@ router.put('/:id/accept', checkRole('Helper'), (req, res) => {
 });
 
 router.put('/:id/reopen', checkRole('Helper'), (req, res) => {
-// TODO change helper_id back to NULL
+  const id = parseInt(req.params.id);
+
+  Tickets
+    .change(id, { helper_id: null })
+    .then(ticket => res.status(200).json(ticket))
+    .catch(error => res.status(500).json({ error }));
 });
 
 router.put('/:id/resolve', checkRole('Helper'), (req, res) => {
-// TODO change resolved status of ticket to true
-// possibly change checkrole to student
+  const id = parseInt(req.params.id);
+
+  Tickets
+    .change(id, { resolved: true })
+    .then(ticket => res.status(200).json(ticket))
+    .catch(error => res.status(500).json({ error }));
+
 });
 
 router.post('/', checkRole('Student'), (req, res) => {
@@ -94,7 +110,12 @@ router.post('/', checkRole('Student'), (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-// TODO Delete this ticket.
+  const id = parseInt(req.params.id);
+
+  Tickets
+    .remove(id)
+    .then(() => res.status(200).json({ message: 'ticket removed successfuly' }))
+    .catch(error => res.status(500).json({ error }));
 });
 
 module.exports = router;

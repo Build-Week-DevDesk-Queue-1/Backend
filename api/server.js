@@ -12,6 +12,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/api/auth', authRouter);
+server.use('/api/user',  validateToken, userRouter);
 server.use('/api/tickets', validateToken, ticketsRouter);
 
 server.get('/', (req, res) => res.status(200).json({ message: 'API is running' }));
