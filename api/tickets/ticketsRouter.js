@@ -32,10 +32,25 @@ router.get('/:id', (req, res) => {
 
   Tickets
     .findBy({ id })
+    .first()
+    .then(ticket => {
+      if (ticket) {
+        res.status(200).json(ticket);
+      } else {
+        res.status(404).json({ message: `the ticket with id# ${id} does not exist` });
+      }
+    })
+    .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/unresolved', (req, res) => {
 // TODO get an array of all unresolved tickets (even the ones that already have an assigned helper)
+  Tickets
+    .findBy({ resolved: false })
+    .then(tickets => {
+      res.status(200).json(tickets);
+    })
+    .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/open', (req, res) => {
