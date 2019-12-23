@@ -28,6 +28,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', (req, res) => {
 // TODO get content of the ticket by it's id
+  const id = parseInt(req.params.id);
+
+  Tickets
+    .findBy({ id })
 });
 
 router.get('/unresolved', (req, res) => {
@@ -53,14 +57,14 @@ router.put('/:id/accept', checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/assign', checkRole('Helper'), (req, res) => {
-//TODO change helper_id to the token owner
+router.put('/:id/reopen', checkRole('Helper'), (req, res) => {
+// TODO change helper_id back to NULL
 });
 
 router.put('/:id/resolve', checkRole('Helper'), (req, res) => {
-//TODO change resolved status of ticket to true
+// TODO change resolved status of ticket to true
+// possibly change checkrole to student
 });
-
 
 router.post('/', checkRole('Student'), (req, res) => {
   const ticketData = req.body;
