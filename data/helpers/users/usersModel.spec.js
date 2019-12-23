@@ -1,15 +1,15 @@
-const db = require('../dbConfig');
+const db = require('../../dbConfig');
 const Users = require('./usersModel');
-const cleanup = require('../seeds/01-cleanup');
-const seedRoles = require('../seeds/02-roles');
+const cleanup = require('../../seeds/01-cleanup');
+const seedRoles = require('../../seeds/02-roles');
 
 describe('Users Model', () => {
-  beforeEach(async () => {
-    await cleanup.seed(db);
-    await seedRoles.seed(db);
-  })
-
   describe('when finding all users', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('returns an empty array with no seeds', async () => {
       const users = await Users.find();
       expect(Array.isArray(users)).toBe(true);
@@ -17,6 +17,11 @@ describe('Users Model', () => {
   })
 
   describe('when adding new users', () => {
+    beforeEach(async () => {
+      await cleanup.seed(db);
+      await seedRoles.seed(db);
+    })
+
     it('returns a user object with an id attached', async () => {
       const userObject = {
         email: 'test@testmail.com',
