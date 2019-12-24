@@ -1,7 +1,7 @@
 const { Tickets } = require('../../../data/helpers');
 module.exports = (req, res, next) => {
   const ticket_id = parseInt(req.params.id);
-  const user_id = parseInt(req.params.decoded_token.id);
+  const user_id = parseInt(req.decoded_token.id);
 
   Tickets
     .findBy({ id: ticket_id })
