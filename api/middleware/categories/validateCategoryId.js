@@ -1,4 +1,4 @@
-const { Categories } = require('../../data/helpers');
+const { Categories } = require('../../../data/helpers');
 module.exports = (req, res, next) => {
   const id = parseInt(req.body.category_id);
 
