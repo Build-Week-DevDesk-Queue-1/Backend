@@ -17,9 +17,11 @@ router.get('/', async (req, res) => {
   const role = await Roles.findBy({ id: role_id });
 
   const queryObject = role.name === 'Student'
-    ? { student_id: id }
+    ? ['tickets.student_id', id]
     : role.name === 'Helper'
-      ? { helper_id: null, resolved: false }
+      ? ['tickets.resolved', '=', false, 
+        'and',
+        'tickets.helper_id', '=', null]
       : null
 
   if (!queryObject) {
@@ -38,7 +40,7 @@ router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
-    .findBy({ id })
+    .findBy(['tickets.id', id])
     .first()
     .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error }));
@@ -46,14 +48,18 @@ router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
 
 router.get('/unresolved', (req, res) => {
   Tickets
-    .findBy({ resolved: false })
+    .findBy(['tickets.resolved', false])
     .then(tickets => res.status(200).json(tickets))
     .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/open', (req, res) => {
   Tickets
-    .findBy({ resolved: false, helper_id: null })
+    .findBy([
+      'tickets.resolved', '=',false, 
+      'and',
+      'tickets.helper_id', '=',null
+    ])
     .then(tickets => res.status(200).json(tickets))
     .then(error => res.status(500).json({ error }));
 });
@@ -68,7 +74,7 @@ router.put('/:id', validateTicketId, checkTicketOwnership, validateTicketUpdate,
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/accept', checkRole('Helper'), validateTicketId, checkTicketOwnership, (req, res) => {
+router.put('/:id/accept', checkRole('Helper'), validateTicketId, (req, res) => {
   const ticket_id = req.params.id;
   const { id } = req.decoded_token;
 
@@ -86,7 +92,7 @@ router.put('/:id/reopen', checkRole('Helper'), validateTicketId, checkTicketOwne
   Tickets
     .change(id, { helper_id: null })
     .then(ticket => res.status(200).json(ticket))
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error, tag: 'reopen' }));
 });
 
 router.put('/:id/resolve', checkRole('Helper'), validateTicketId,  checkTicketOwnership, (req, res) => {

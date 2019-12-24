@@ -1,5 +1,10 @@
 # **API User Guide**
 
+**Table of Contents:**|
+---------
+[Authentication Routes](#Authentication-Routes)|
+[Ticket Routes](#Ticket-Routes)|
+
 ### **Authentication Routes**
 
 ###  **User Registration**:
@@ -35,7 +40,8 @@ Output:
 }
 ```
 
-### **User Login**
+### **User Login** 
+[back to top](#api-user-guide)
 #### POST */api/auth/login*
 
 Validates user's credentials.
@@ -64,6 +70,7 @@ Output:
 }
 ```
 ## **Ticket Routes**
+[back to top](#api-user-guide)
 
 ### **Student Actions**:
 
