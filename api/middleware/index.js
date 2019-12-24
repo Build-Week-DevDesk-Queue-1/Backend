@@ -4,6 +4,7 @@ const validateTicketId = require('./validateTicketId');
 const validateTicketCreation = require('./validateTicketCreation');
 const validateTicketUpdate = require('./validateTicketUpdate');
 const checkRole = require('./checkRole');
+const checkTicketOwnership = require('./checkTicketOwnership');
 
 module.exports = {
   validateToken,
@@ -11,5 +12,6 @@ module.exports = {
   validateTicketId,
   validateTicketCreation,
   validateTicketUpdate,
-  checkRole
+  checkRole,
+  checkTicketOwnership
 }
