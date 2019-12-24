@@ -1,4 +1,4 @@
-const { validateCategoryId } = require('./')
+const { validateCategoryId } = require('..')
 module.exports = (req, res, next) => {
   const { title, description, tried, category_id } = req.body;
   const content = Object.entries(req.body);

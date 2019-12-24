@@ -1,8 +1,8 @@
 const validateToken = require('./validateToken');
 const validateCategoryId = require('./validateCategoryId');
-const validateTicketId = require('./validateTicketId');
-const validateTicketCreation = require('./validateTicketCreation');
-const validateTicketUpdate = require('./validateTicketUpdate');
+const validateTicketId = require('./tickets/validateTicketId');
+const validateTicketCreation = require('./tickets/validateTicketCreation');
+const validateTicketUpdate = require('./tickets/validateTicketUpdate');
 const checkRole = require('./checkRole');
 const checkTicketOwnership = require('./checkTicketOwnership');
 
