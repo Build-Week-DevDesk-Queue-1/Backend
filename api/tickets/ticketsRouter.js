@@ -1,6 +1,14 @@
 const express = require('express')
 const { Tickets, Roles } = require('../../data/helpers');
-const { checkRole, validateTicketId, validateCategoryId, validateTicketUpdate, validateTicketCreation } = require('../middleware')
+
+const { 
+  checkRole, 
+  checkTicketOwnership,
+  validateTicketId, 
+  validateCategoryId, 
+  validateTicketUpdate, 
+  validateTicketCreation } = require('../middleware')
+
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -26,7 +34,7 @@ router.get('/', async (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.get('/:id', validateTicketId, (req, res) => {
+router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -50,7 +58,7 @@ router.get('/open', (req, res) => {
     .then(error => res.status(500).json({ error }));
 });
 
-router.put('/:id', validateTicketId, validateTicketUpdate, (req, res) => {
+router.put('/:id', validateTicketId, checkTicketOwnership, validateTicketUpdate, (req, res) => {
   const id = parseInt(req.params.id);
   const changes = req.ticket_updates;
 
@@ -60,7 +68,7 @@ router.put('/:id', validateTicketId, validateTicketUpdate, (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/accept', validateTicketId, checkRole('Helper'), (req, res) => {
+router.put('/:id/accept', checkRole('Helper'), validateTicketId, checkTicketOwnership, (req, res) => {
   const ticket_id = req.params.id;
   const { id } = req.decoded_token;
 
@@ -72,7 +80,7 @@ router.put('/:id/accept', validateTicketId, checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/reopen', validateTicketId, checkRole('Helper'), (req, res) => {
+router.put('/:id/reopen', checkRole('Helper'), validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -81,7 +89,7 @@ router.put('/:id/reopen', validateTicketId, checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/resolve', validateTicketId, checkRole('Helper'), (req, res) => {
+router.put('/:id/resolve', checkRole('Helper'), validateTicketId,  checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -103,7 +111,7 @@ router.post('/', checkRole('Student'), validateTicketCreation, validateCategoryI
     .catch(error => res.status(500).json({ error }));
 })
 
-router.delete('/:id', validateTicketId, (req, res) => {
+router.delete('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
