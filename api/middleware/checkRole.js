@@ -12,6 +12,6 @@ module.exports = role => {
           res.status(401).json({ message: 'unauthorizaed role' });
         }
       })
-      .catch(error => res.status(500).json({ error }));
+      .catch(error => res.status(500).json({ error, tag: 'role' }));
   }
 }

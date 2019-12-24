@@ -1,6 +1,14 @@
 const express = require('express')
 const { Tickets, Roles } = require('../../data/helpers');
-const { checkRole } = require('../middleware')
+
+const { 
+  checkRole, 
+  checkTicketOwnership,
+  validateTicketId, 
+  validateCategoryId, 
+  validateTicketUpdate, 
+  validateTicketCreation } = require('../middleware')
+
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -9,9 +17,11 @@ router.get('/', async (req, res) => {
   const role = await Roles.findBy({ id: role_id });
 
   const queryObject = role.name === 'Student'
-    ? { student_id: id }
+    ? ['tickets.student_id', id]
     : role.name === 'Helper'
-      ? { helper_id: null, resolved: false }
+      ? ['tickets.resolved', '=', false, 
+        'and',
+        'tickets.helper_id', '=', null]
       : null
 
   if (!queryObject) {
@@ -26,39 +36,37 @@ router.get('/', async (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
-    .findBy({ id })
+    .findBy(['tickets.id', id])
     .first()
-    .then(ticket => {
-      if (ticket) {
-        res.status(200).json(ticket);
-      } else {
-        res.status(404).json({ message: `the ticket with id# ${id} does not exist` });
-      }
-    })
+    .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/unresolved', (req, res) => {
   Tickets
-    .findBy({ resolved: false })
+    .findBy(['tickets.resolved', false])
     .then(tickets => res.status(200).json(tickets))
     .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/open', (req, res) => {
   Tickets
-    .findBy({ resolved: false, helper_id: null })
+    .findBy([
+      'tickets.resolved', '=',false, 
+      'and',
+      'tickets.helper_id', '=',null
+    ])
     .then(tickets => res.status(200).json(tickets))
     .then(error => res.status(500).json({ error }));
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateTicketId, checkTicketOwnership, validateTicketUpdate, (req, res) => {
   const id = parseInt(req.params.id);
-  const changes = req.body;
+  const changes = req.ticket_updates;
 
   Tickets
     .change(id, changes)
@@ -66,7 +74,7 @@ router.put('/:id', (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/accept', checkRole('Helper'), (req, res) => {
+router.put('/:id/accept', checkRole('Helper'), validateTicketId, (req, res) => {
   const ticket_id = req.params.id;
   const { id } = req.decoded_token;
 
@@ -78,16 +86,16 @@ router.put('/:id/accept', checkRole('Helper'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 });
 
-router.put('/:id/reopen', checkRole('Helper'), (req, res) => {
+router.put('/:id/reopen', checkRole('Helper'), validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
     .change(id, { helper_id: null })
     .then(ticket => res.status(200).json(ticket))
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error, tag: 'reopen' }));
 });
 
-router.put('/:id/resolve', checkRole('Helper'), (req, res) => {
+router.put('/:id/resolve', checkRole('Helper'), validateTicketId,  checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
@@ -97,8 +105,8 @@ router.put('/:id/resolve', checkRole('Helper'), (req, res) => {
 
 });
 
-router.post('/', checkRole('Student'), (req, res) => {
-  const ticketData = req.body;
+router.post('/', checkRole('Student'), validateTicketCreation, validateCategoryId, (req, res) => {
+  const ticketData = req.ticket_content;
   ticketData.student_id = req.decoded_token.id;
 
   Tickets
@@ -109,7 +117,7 @@ router.post('/', checkRole('Student'), (req, res) => {
     .catch(error => res.status(500).json({ error }));
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets

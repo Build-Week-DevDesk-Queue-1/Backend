@@ -41,7 +41,13 @@ exports.up = function(knex) {
   .createTable('tickets', tbl => {
     tbl.increments('id');
 
-    tbl.timestamps(false,true);
+    tbl.datetime('created_at')
+      .defaultTo(Date.now())
+      .notNullable();
+
+    tbl.datetime('updated_at')
+      .defaultTo(Date.now())
+      .notNullable();
 
     tbl.integer('student_id')
       .unsigned()
