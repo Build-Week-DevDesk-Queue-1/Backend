@@ -1,3 +1,4 @@
+const { validateCategoryId } = require('./')
 module.exports = (req, res, next) => {
   const { title, description, tried, category_id } = req.body;
   const content = Object.entries(req.body);
@@ -14,8 +15,13 @@ module.exports = (req, res, next) => {
   if (title) updates.title = title;
   if (description) updates.description = description;
   if (tried) updates.tried = tried;
-  if (category_id) updates.category = category_id;
+  if (category_id) updates.category_id = category_id;
 
   req.ticket_updates = updates;
+
+  if (category_id in req.ticket_updates) {
+    return validateCategoryId(req, res, next)
+  }
+
   next();
 }

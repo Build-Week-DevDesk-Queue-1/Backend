@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
     tried,
     category_id    
   }
-
+  
   req.ticket_content = ticket;
   next();
 }

@@ -1,6 +1,6 @@
 const express = require('express')
 const { Tickets, Roles } = require('../../data/helpers');
-const { checkRole, validateTicketId, validateCategoryId, validateTicketUpdate } = require('../middleware')
+const { checkRole, validateTicketId, validateCategoryId, validateTicketUpdate, validateTicketCreation } = require('../middleware')
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -50,9 +50,9 @@ router.get('/open', (req, res) => {
     .then(error => res.status(500).json({ error }));
 });
 
-router.put('/:id', validateTicketId, validateCategoryId, validateTicketUpdate, (req, res) => {
+router.put('/:id', validateTicketId, validateTicketUpdate, (req, res) => {
   const id = parseInt(req.params.id);
-  const changes = req.body;
+  const changes = req.ticket_updates;
 
   Tickets
     .change(id, changes)
@@ -91,8 +91,8 @@ router.put('/:id/resolve', validateTicketId, checkRole('Helper'), (req, res) => 
 
 });
 
-router.post('/', checkRole('Student'), validateCategoryId, (req, res) => {
-  const ticketData = req.body;
+router.post('/', checkRole('Student'), validateTicketCreation, validateCategoryId, (req, res) => {
+  const ticketData = req.ticket_content;
   ticketData.student_id = req.decoded_token.id;
 
   Tickets
