@@ -13,7 +13,9 @@ const findBy = properties => {
       'students.last_name as student_last_name',
       'helpers.first_name as helper_first_name',
       'helpers.last_name as helper_last_name',
+      'categories.name',
       'tickets.*')
+    .join('categories', 'categories.id', 'tickets.category_id')
     .join('users as students', 'students.id', 'tickets.student_id')
     .leftOuterJoin('users as helpers', 'helpers.id', 'tickets.helper_id')
 }
