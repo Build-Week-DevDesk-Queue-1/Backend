@@ -13,6 +13,7 @@ const findBy = properties => {
       'students.last_name as student_last_name',
       'helpers.first_name as helper_first_name',
       'helpers.last_name as helper_last_name',
+      'helpers.email',
       'categories.name as category',
       'tickets.*')
     .join('categories', 'categories.id', 'tickets.category_id')
