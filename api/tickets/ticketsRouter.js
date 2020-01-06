@@ -47,7 +47,7 @@ router.get('/open', (req, res) => {
       'tickets.helper_id': null
     })
     .then(tickets => res.status(200).json(tickets))
-    .then(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error }));
 });
 
 router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
