@@ -317,6 +317,58 @@ Response:
 ## **General Routes**
 [back to top](#api-user-guide)
 
+### Tickets
+#### GET */api/tickets/open*
+
+Returns an array of all tickets that do not have a helper assigned and are not resolved.
+
+Request:
+```javascript
+// No input needed
+```
+Response:
+```javascript
+[
+  {
+    student_first_name: "Jonathan",
+    student_last_name: "Chen",
+    helper_first_name: null, // Notice helper
+    helper_last_name: null, // info is null
+    email: null,
+    category: "Applied JavaScript",
+    id: 3,
+    created_at: 1577512671723,
+    updated_at: 1577213948126,
+    student_id: 2,
+    category_id: 4,
+    helper_id: null, 
+    title: "test title",
+    description: "this is a description",
+    tried: "I tried doing many things",
+    resolved: false // ticket status is not resolved
+  },
+  {
+    student_first_name: "Jonathan",
+    student_last_name: "Chen",
+    helper_first_name: null,
+    helper_last_name: null,
+    email: null,
+    category: "Applied JavaScript",
+    id: 4,
+    created_at: 1578342998271,
+    updated_at: 1577213948126,
+    student_id: 2,
+    category_id: 4,
+    helper_id: null,
+    title: "test title",
+    description: "this is a description",
+    tried: "I tried doing things",
+    resolved: false
+  }
+]
+```
+
+### Categories
 #### GET */api/categories*
 
 Returns an array of all available categories
