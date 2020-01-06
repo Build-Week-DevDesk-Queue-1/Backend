@@ -12,27 +12,41 @@ const {
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-// TODO refactor this endpoint to return ALL tickets without discrimination
-  const { role_id, id } = req.decoded_token;
-  const role = await Roles.findBy({ id: role_id });
+  const { id, role_id } = req.decoded_token;
 
-  const queryObject = role.name === 'Student'
-    ? ['tickets.student_id', id]
-    : role.name === 'Helper'
-      ? ['tickets.resolved', '=', false, 
-        'and',
-        'tickets.helper_id', '=', null]
-      : null
+  let role = await Roles.findBy({ id: role_id }).first();
+  let user;
 
-  if (!queryObject) {
-    return res.status(400).json({ message: 'not a valid role' });
+  switch (role.name) {
+    case 'Student':
+      user = 'tickets.student_id';
+      break;
+
+    case 'Helper':
+      user = 'tickets.helper_id';
+      break;
   }
 
   Tickets
-    .findBy(queryObject)
-    .then(tickets => {
-      res.status(200).json(tickets);
+    .findBy({ [user]: id })
+    .then(tickets => res.status(200).json(tickets))
+    .catch(error => res.status(500).json({ error }));
+});
+
+router.get('/unresolved', (req, res) => {
+  Tickets
+    .findBy({ 'tickets.resolved': false })
+    .then(tickets => res.status(200).json(tickets))
+    .catch(error => res.status(500).json({ error }));
+});
+
+router.get('/open', (req, res) => {
+  Tickets
+    .findBy({
+      'tickets.resolved': false,
+      'tickets.helper_id': null
     })
+    .then(tickets => res.status(200).json(tickets))
     .catch(error => res.status(500).json({ error }));
 });
 
@@ -40,28 +54,10 @@ router.get('/:id', validateTicketId, checkTicketOwnership, (req, res) => {
   const id = parseInt(req.params.id);
 
   Tickets
-    .findBy(['tickets.id', id])
+    .findBy({ 'tickets.id': id })
     .first()
     .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error }));
-});
-
-router.get('/unresolved', (req, res) => {
-  Tickets
-    .findBy(['tickets.resolved', false])
-    .then(tickets => res.status(200).json(tickets))
-    .catch(error => res.status(500).json({ error }));
-});
-
-router.get('/open', (req, res) => {
-  Tickets
-    .findBy([
-      'tickets.resolved', '=',false, 
-      'and',
-      'tickets.helper_id', '=',null
-    ])
-    .then(tickets => res.status(200).json(tickets))
-    .then(error => res.status(500).json({ error }));
 });
 
 router.put('/:id', validateTicketId, checkTicketOwnership, validateTicketUpdate, (req, res) => {
@@ -90,7 +86,7 @@ router.put('/:id/reopen', checkRole('Helper'), validateTicketId, checkTicketOwne
   const id = parseInt(req.params.id);
 
   Tickets
-    .change(id, { helper_id: null })
+    .change(id, { 'tickets.helper_id': null })
     .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error, tag: 'reopen' }));
 });
@@ -99,7 +95,7 @@ router.put('/:id/resolve', checkRole('Helper'), validateTicketId,  checkTicketOw
   const id = parseInt(req.params.id);
 
   Tickets
-    .change(id, { resolved: true })
+    .change(id, { 'tickets.resolved': true })
     .then(ticket => res.status(200).json(ticket))
     .catch(error => res.status(500).json({ error }));
 

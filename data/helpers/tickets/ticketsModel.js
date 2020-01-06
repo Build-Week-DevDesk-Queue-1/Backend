@@ -7,13 +7,13 @@ const find = () => {
 
 const findBy = properties => {
   return db('tickets')
-    .where(...properties)
+    .where(properties)
     .select(
       'students.first_name as student_first_name', 
       'students.last_name as student_last_name',
       'helpers.first_name as helper_first_name',
       'helpers.last_name as helper_last_name',
-      'categories.name',
+      'categories.name as category',
       'tickets.*')
     .join('categories', 'categories.id', 'tickets.category_id')
     .join('users as students', 'students.id', 'tickets.student_id')
@@ -30,20 +30,20 @@ const change = async (id, changes) => {
   changes.updated_at = new Date;
   console.log(changes);
 
-  await findBy(['tickets.id', id]).update(changes);
+  await findBy({ 'tickets.id': id }).update(changes);
 
-  return findBy(['tickets.id', id]).first();
+  return findBy({ 'tickets.id': id }).first();
 }
 
 const remove = id => {
-  return findBy(['tickets.id', id]).delete();
+  return findBy({ 'tickets.id': id }).delete();
 }
 
 const add = async ticket => {
   ticket.created_at = new Date;
   const [id] = await db('tickets').insert(ticket, 'id');
   
-  return findBy(['tickets.id', id]).first();
+  return findBy({ 'tickets.id': id }).first();
 }
 
 module.exports = {
