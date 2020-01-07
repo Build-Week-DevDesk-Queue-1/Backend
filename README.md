@@ -1,10 +1,10 @@
 # **API User Guide**
 
-**Table of Contents:**|
----------
-[Authentication Routes](#Authentication-Routes)|
-[Ticket Routes](#Ticket-Routes)|
-[General Routes](#General-Routes)|
+|**Table of Contents:**|
+|-|
+|[Authentication Routes](#Authentication-Routes)|
+|[Ticket Routes](#Ticket-Routes)|
+|[General Routes](#General-Routes)|
 
 ### **Authentication Routes**
 
