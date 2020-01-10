@@ -42,11 +42,11 @@ exports.up = function(knex) {
     tbl.increments('id');
 
     tbl.datetime('created_at')
-      .defaultTo(Date.now())
+      .defaultTo(knex.fn.now())
       .notNullable();
 
     tbl.datetime('updated_at')
-      .defaultTo(Date.now())
+      .defaultTo(knex.fn.now())
       .notNullable();
 
     tbl.integer('student_id')
