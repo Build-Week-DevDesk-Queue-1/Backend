@@ -12,5 +12,5 @@ module.exports = (req, res, next) => {
         res.status(404).json({ message: `ticket with id ${id} does not exist` });
       }
     })
-    .catch(error => res.status(5002).json({ error, tag: 'ticket id' }));
+    .catch(error => res.status(500).json({ error, tag: 'ticket id' }));
 }
