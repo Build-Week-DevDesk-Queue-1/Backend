@@ -14,5 +14,5 @@ module.exports = (req, res, next) => {
         res.status(404).json({ message: `the category id ${id} does not exist` })
       }
     })
-    .catch(error => res.status(500).json({ error, tag: 'crazy' }));
+    .catch(error => res.status(5001).json({ error }));
 }
