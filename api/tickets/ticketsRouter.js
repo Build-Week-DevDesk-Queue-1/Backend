@@ -97,7 +97,7 @@ router.put('/:id/resolve', checkRole('Helper'), validateTicketId,  checkTicketOw
   Tickets
     .change(id, { 'tickets.resolved': true })
     .then(ticket => res.status(200).json(ticket))
-    .catch(error => res.status(5002).json({ error }));
+    .catch(error => res.status(500).json({ error }));
 
 });
 
